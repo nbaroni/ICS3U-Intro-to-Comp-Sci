@@ -1,0 +1,119 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch AreaOfCircleCalculate",
+            "request": "launch",
+            "mainClass": "AreaOfCircleCalculate",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch BillingAddress",
+            "request": "launch",
+            "mainClass": "BillingAddress",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch BillingStatements",
+            "request": "launch",
+            "mainClass": "BillingStatements",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch CalculateSlope",
+            "request": "launch",
+            "mainClass": "CalculateSlope",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch ExampleOne",
+            "request": "launch",
+            "mainClass": "ExampleOne",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch Homework",
+            "request": "launch",
+            "mainClass": "Homework",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch InitialsBlockLetters",
+            "request": "launch",
+            "mainClass": "InitialsBlockLetters",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch MoneyThruCoins",
+            "request": "launch",
+            "mainClass": "MoneyThruCoins",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch SmallPicture",
+            "request": "launch",
+            "mainClass": "SmallPicture",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch SolveParabolaEquation",
+            "request": "launch",
+            "mainClass": "SolveParabolaEquation",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch SqrtPractice",
+            "request": "launch",
+            "mainClass": "SqrtPractice",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch StringConcatonation",
+            "request": "launch",
+            "mainClass": "StringConcatonation",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch VolumeOfSphereCalculate",
+            "request": "launch",
+            "mainClass": "VolumeOfSphereCalculate",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch WritingFunctions",
+            "request": "launch",
+            "mainClass": "WritingFunctions",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
+            "name": "Launch stringexamples",
+            "request": "launch",
+            "mainClass": "stringexamples",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        }
+    ]
+}
