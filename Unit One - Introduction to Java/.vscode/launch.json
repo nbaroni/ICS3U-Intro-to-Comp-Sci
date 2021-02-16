@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch CrossCountry",
+            "request": "launch",
+            "mainClass": "CrossCountry",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
             "name": "Launch FunctionsAndScanner",
             "request": "launch",
             "mainClass": "FunctionsAndScanner",

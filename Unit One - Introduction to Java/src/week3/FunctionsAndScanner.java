@@ -26,7 +26,7 @@ public class FunctionsAndScanner {
 
         return minutesAsSeconds + seconds;
     }
-    public static int getSumVersion2(int number){
+    public static int getSumVersion2(String number){
         String numberasString = "" + number;
         int digit1 = Integer.parseInt(numberasString.substring(0,1));
         int digit2 = Integer.parseInt(numberasString.substring(1, 2));
@@ -35,10 +35,12 @@ public class FunctionsAndScanner {
         int digit5 = Integer.parseInt(numberasString.substring(4));
 
         return digit1 + digit2 + digit3 + digit4 + digit5;
-
-
     }
-    private static int getSum(int number){
+    public static int getSumVersion2(int number2){
+        String numberAsString = "" + number2;
+        return getSumVersion2(numberAsString);
+    }
+    public static int getSum(int number){
         int digit1 = number / 10000;
         int digit2 = number / 1000 % 10;
         int digit3 = number /100 % 10;
