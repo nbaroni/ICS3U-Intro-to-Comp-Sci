@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch hi",
+            "request": "launch",
+            "mainClass": "hi",
+            "projectName": "Unit One - Introduction to Java_91eb19aa"
+        },
+        {
+            "type": "java",
             "name": "Launch CrossCountry",
             "request": "launch",
             "mainClass": "CrossCountry",
