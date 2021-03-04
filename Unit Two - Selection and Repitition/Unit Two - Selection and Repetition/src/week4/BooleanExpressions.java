@@ -6,8 +6,8 @@ public class BooleanExpressions {
       primitiveBooleans();
 
       primitiveBooleanExpressions();
-        
     }
+
     private static void primitiveBooleanExpressions(){
         Scanner scanner = new Scanner(System.in);
 
