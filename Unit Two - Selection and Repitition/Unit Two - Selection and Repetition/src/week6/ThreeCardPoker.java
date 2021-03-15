@@ -32,7 +32,7 @@ public class ThreeCardPoker {
         int wallet = STARTING_MONEY;
         boolean playAgain = true;
 
-        while(wallet >= 0 && playAgain){
+        while(wallet > 0 && playAgain){
             System.out.println("\n\n\nWelcome to poker! You have $" + wallet + " in your wallet!");
             int anteWager = wager("ante", in, false);
 
@@ -49,14 +49,16 @@ public class ThreeCardPoker {
             String dealerRawHand = dealCards();
 
             //once the player is shown their hand, they will be asked if they want to continue playing or if they would like to fold
-            boolean willContinue = playWager(playerRawHand, in);
             String playerHand = handFindOut(playerRawHand);
+            boolean willContinue = playWager(playerRawHand, in);
 
             if (willContinue){
+                //the play wager is the same as the ante wager.
                 int playWager = anteWager;
                 wallet -= playWager;
                 wallet(wallet);
 
+                //converts the hands into a form that can be displayed to the player. Further explanations below.
                 String dealerHand = handFindOut(dealerRawHand);
 
                 //The way I organized the strings, every string that is a pair or higher has a comma in it. 
@@ -85,20 +87,39 @@ public class ThreeCardPoker {
                 }
             }
 
-            //after we calculate who wins, we can calaulate the pair wager. I have this condition for the if statement because the pairWager is optional.
-            if (pairWager != 0){
+            //after we calculate who wins, we can calaulate the pair wager. I have this condition for the if statement because the pair wager is optional.
+            if (willContinue && pairWager != 0 && playerHand.indexOf(",") != -1){
                 int pairPayout = pairWagerPayout(pairWager, playerHand);
-                System.out.println("\nYou made $" + pairPayout + " from the optional pair wager!");
+
+                /**
+                 * prints a statement to the player about how much money they made from the pair wager.
+                 * The first value I input into the string is the player's hand. The second input is the payout value.
+                 * I parse that as an integer to get rid of the possible 0 in the tens place. Without it for example,
+                 * it would print: "Your 1 pair gave you a 01 to 1 payout from the optional pair wager!" and that looks silly.
+                 */
+                System.out.println("\nYour " + playerHand.substring(0, playerHand.indexOf(",")).toLowerCase() + " gave you a " + Integer.parseInt(playerHand.substring(playerHand.length() -2)) + " to 1 payout from the optional pair plus wager!");
                 wallet += pairPayout;
                 wallet(wallet);
+            }else if (!willContinue){
+                //if the player decides to not place a pair wager, the pair plus wager is collected by the dealer regardless of what the player has
+                System.out.println("\nSince you didn't place a play wager, you didnt make anything from your pair plus wager.");
+                wallet(wallet);
             }else{
-                System.out.println("\nYou didn't make anything from the pair wager since you didn't bet on it!");
+                //This will run if either the player has a hand that won't make money from the pair plus wager, or if they didn't bet on it.
+                //since the output is really the same, I just have it print a slightly different statement to the user
+                if(pairWager == 0){
+                System.out.println("\nYou didn't make anything from the pair plus wager since you didn't bet on it!");
+                } else{
+                    System.out.println("\nYou didn't make anything from the pair plus wager since your hand was too poor.");
+                }
                 wallet(wallet);
             }
 
             //since I don't want the player playing the game if they either have no money or are in debt, I will only ask them if they want to play again if they have money in their wallet
-            if (wallet >= 0){
+            if (wallet > 0){
                 playAgain = willPlayAgain(in);
+            }else{
+                playAgain = false;
             }
         }
 
@@ -106,6 +127,8 @@ public class ThreeCardPoker {
         //if you don't you will go into debt and as this statement says, and the casino will charge your credit card
         if (wallet < 0){
             System.out.println("\nYou ran out of money so the game ended. You now owe the casino $" + Math.abs(wallet) + " which will be charged to your credit card. Get good.");
+        }else if(wallet == 0){
+            System.out.println("\nYou are fresh out of money! You can't play another round without buying in again.");
         }
 
         //statement to see how much money the player made/lost
@@ -183,6 +206,10 @@ public class ThreeCardPoker {
         System.out.println("You have $" + wallet + " in your wallet.");
     }
 
+    /**
+     * This method builds the string which gets the cards.
+     * @return the card in the form: #s
+     */
     private static String getCard() {
         return getFace() + getSuit();
     }
@@ -264,16 +291,17 @@ public class ThreeCardPoker {
         while (true){
             System.out.print("\nPlease enter the amount of money you would like to bet for the " + type + " wager. ($50 - $100)");
 
-            //the optional addon for the string.
+            //the optional addon for the output.
             if (isOptional){
-                System.out.print(" If you do not wish to bet, enter $0: $");
-            }else{
-                System.out.print(": $");
+                System.out.print(" If you do not wish to bet, enter $0");
             }
+
+            //the final part of the output that is the same regardless of the addon
+            System.out.print(": $");
 
             String amt = in.next();
 
-            //since I am using parseInt() and I don't want the program to crash, I must catch the exception here, If I catch it, it will also return an invalid input
+            //since I am using parseInt() and I don't want the program to crash, I must catch the exception here, If I catch it, the program will also tell the user it has recieved an invalid input
             try{
                 if ((amt.equals("0") && isOptional)  || (Integer.parseInt(amt) >= 50 && Integer.parseInt(amt) <= 100)){
                     return Integer.parseInt(amt);
@@ -288,13 +316,16 @@ public class ThreeCardPoker {
     /**
      * This method simply gets the card numbers for calculating what hand they make. Jacks become 11, queens become 12, kings 13 and aces 1.
      * @param temp temporary string that includes incrimentally less of the hand as it is calculating.
+     * @param aceValue the value it will set the aces as. I need this because straights can be A, 2, 3, and for calculating which card trumps which i need to use ace as 14.
      * @return the card number
      */
-    private static int getActualCardNumber(String temp){
+    private static int getActualCardNumber(String temp, int aceValue){
         int num;
         try{
+            //if this is successful, the card is not a face card.
             num = Integer.parseInt(temp.substring(0, temp.indexOf(" ") -1));
         }catch (NumberFormatException ec){
+            //There's only a few things this can be so I just go through every case.
             if (temp.substring(0, 1).equals("J")){
                 num = JACK_CARD;
             }else if (temp.substring(0, 1).equals("Q")){
@@ -302,7 +333,7 @@ public class ThreeCardPoker {
             }else if (temp.substring(0, 1).equals("K")){
                 num = KING_CARD;
             }else{
-                num = ACE_LOW_CARD;
+                num = aceValue;
             }
         }
         return num;
@@ -315,13 +346,13 @@ public class ThreeCardPoker {
      */
     private static int getCardNumber(String rawHand, int max){
         String temp = rawHand;
-        int num1 = getActualCardNumber(temp);
+        int num1 = getActualCardNumber(temp, ACE_HIGH_CARD);
         temp = temp.substring(temp.indexOf(" ") +1);
 
-        int num2 = getActualCardNumber(temp);
+        int num2 = getActualCardNumber(temp, ACE_HIGH_CARD);
         temp = temp.substring(temp.indexOf(" ") +1);
 
-        int num3 = getActualCardNumber(temp);
+        int num3 = getActualCardNumber(temp, ACE_HIGH_CARD);
 
         //This just detirmines which card is which essentially so it will know what to return. Since max is already used, I use maxim for the highest card.
         int maxim = Math.max(num1, Math.max(num2, num3));
@@ -339,7 +370,7 @@ public class ThreeCardPoker {
                 min = num1;
             }
             maxim = num2;
-        }else{
+        }else if (num3 == num1){
             if (min == num3){
                 min = num2;
             }
@@ -412,14 +443,16 @@ public class ThreeCardPoker {
         //throughout this entire section, I juggle around with a temporary string. This is just to make it easier to grab every card.
         String temp = hand;
 
-        int num1 = getActualCardNumber(temp);
+        //i use the low ace value here because of straights. I set it to the high value later.
+        int num1 = getActualCardNumber(temp, ACE_LOW_CARD);
         temp = temp.substring(temp.indexOf(" ") +1);
 
-        int num2 = getActualCardNumber(temp);
+        int num2 = getActualCardNumber(temp, ACE_LOW_CARD);
         temp = temp.substring(temp.indexOf(" ") +1);
 
-        int num3 = getActualCardNumber(temp);
+        int num3 = getActualCardNumber(temp, ACE_LOW_CARD);
 
+        //grabs all the suits of the cards so it can tell if they are a flush/straight flush  
         temp = hand;
         String suit1 = temp.substring(1, 2);
         temp = temp.substring(temp.indexOf(" ") +1);
@@ -432,7 +465,7 @@ public class ThreeCardPoker {
         int max = Math.max(num1, Math.max(num2, num3));
         int min = Math.min(num1, Math.min(num2, num3));
 
-        //since I didn't want to define a new string, I just use temp as the high card. Since Ace is the high card, but it will show up as 1, I try to isolate that first.
+        //since I didn't want to define a new string, I just use temp as the high card. Since Ace is almost always the highest card, but it will show up as 1, I try to isolate that first.
         if (min == ACE_LOW_CARD){
             temp = "Ace";
         }else if (max == QUEEN_CARD){
@@ -492,7 +525,7 @@ public class ThreeCardPoker {
             if (max - min == 2){
                 if (temp.equals("Ace") && (num1 == 3 || num2 == 3 || num3 == 3)){
                     //I need this here because otherwise, if a straight flush is made up of an ace a two and a three, it will say it's ace high
-                    //since im doing this for only one case, I don't need a variable
+                    //since im doing this for only one case, I don't need to put in a variable for the high card
                     return "Straight flush, 3 high" + STRAIGHT_FLUSH;
                 }
                 return "Straight flush, " + temp + " high" + STRAIGHT_FLUSH;
@@ -504,15 +537,10 @@ public class ThreeCardPoker {
             return "Straight, 3 high" + STRAIGHT;
         }
 
-        max = Math.max(num1, Math.max(num2, num3));
-        min = Math.min(num1, Math.min(num2, num3));
-
-        /**
-         * This will catch all straights that are not Ace, two, three
-         */
+        //This will catch all straights that are not Ace, two, three
         if (max - min == 2){
             return "Straight, " + temp + " high" + STRAIGHT;
-        }else{
+        }else{ //finally, if the hand is just a high card, it will go here
             return temp + " high" + HIGH_CARD;
          }
     }
